@@ -1,0 +1,391 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "querypacks_Invictus_Training_Query_Pack_name": {
+            "defaultValue": "Invictus-Training-Query-Pack",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/querypacks",
+            "apiVersion": "2019-09-01",
+            "name": "[parameters('querypacks_Invictus_Training_Query_Pack_name')]",
+            "location": "eastus",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/4389b125-35be-4aa9-a27b-00d5060af54b')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Register connector",
+                "description": "When a new PTA agent is connect this event will be generated\n",
+                "body": "AuditLogs\r\n| where OperationName == \"Register connector\"",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/50aa0150-a13e-4028-a21f-290da5d3d148')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Update application – Certificates and secrets management",
+                "body": "AzureActivity\r\n| where OperationNameValue == \"MICROSOFT.KEYVAULT/VAULTS/WRITE\"",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/67c2906b-2bb3-4fa3-8d9a-658e9cb938c6')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Eligible member added to a PIM role (setup)",
+                "body": "AuditLogs\r\n| where OperationName == \"Add eligible member to role\"\r\n| extend Target = parse_json(TargetResources[0]).userPrincipalName\r\n// Role ID can be used to lookup role in AAD.\r\n| extend RoleID = parse_json(TargetResources[1]).id\r\n",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/742670e3-1ba2-4aa9-b219-3ff6a2b984d8')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "List Storage Account Keys",
+                "body": "AzureActivity\n| where OperationNameValue == \"MICROSOFT.STORAGE/STORAGEACCOUNTS/LISTKEYS/ACTION\"\n\n",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/8001417a-6343-43d2-b813-f02bb8c1ec29')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Add policy",
+                "body": "AuditLogs\r\n| where OperationName == \"Add policy\"\r\n| extend Actor = tostring(parse_json(tostring(InitiatedBy.user)).userPrincipalName)\r\n| extend Policy = tostring(TargetResources[0].displayName)",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/8fcc73af-cdd3-4812-a64c-fdae6c18bb42')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Add service principal",
+                "body": "AuditLogs\r\n| where OperationName == \"Add service principal\"\r\n| extend Actor = tostring(parse_json(tostring(InitiatedBy.app)).displayName)\r\n| where Result == \"success\"",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/a106cd9e-653d-46e0-ba87-ac6d6b27cf2a')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "NSG Changes",
+                "description": "List NSG changes and the content of those changes.",
+                "body": "AzureActivity \r\n| where OperationNameValue==\"MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/SECURITYRULES/WRITE\"\r\n| extend ParsedProperties = parse_json(Properties)\r\n| where ActivityStatusValue == \"Accept\"\r\n| extend NSGResponseBody = ParsedProperties.responseBody\r\n| extend RawNSGRule = parse_json(tostring(ParsedProperties.responseBody)).properties\r\n| project TimeGenerated, CallerIpAddress, HTTPRequest, ResourceGroup, _ResourceId, ActivityStatusValue, ActivitySubstatusValue, RawNSGRule\r\n| evaluate bag_unpack(RawNSGRule)",
+                "related": {
+                    "categories": [
+                        "network"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/a28995c5-1b6b-43b5-a7cc-51012c03328d')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Update policy",
+                "body": "AuditLogs\r\n| where OperationName == \"Update policy\"\r\n| extend Actor = tostring(parse_json(tostring(InitiatedBy.user)).userPrincipalName)\r\n| extend Policy = tostring(TargetResources[0].displayName)",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/a812d476-2224-4999-b95f-f6af67045ea5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Add member to role (activation of a role)",
+                "body": "AuditLogs\r\n| where OperationName == \"Add member to role completed (PIM activation)\"",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/a92ec991-3fe0-4fa8-b2f3-51fe1a39e2a4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Azure Keyvault logging",
+                "description": "The field ‘OperationName’ will contain the type of action that was performed against Key Vault objects. See next slide for some examples. ",
+                "body": "AzureDiagnostics\r\n| where ResourceProvider == \"MICROSOFT.KEYVAULT\"",
+                "related": {
+                    "categories": [],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/ab150513-2cdc-4bb9-bcd9-5dae8c111979')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Create role assignment",
+                "body": "AuditLogs\r\n| where OperationName == \"Add app role assignment grant to user\"\r\n| extend Actor = tostring(parse_json(tostring(InitiatedBy.user)).userPrincipalName)\r\n| extend Application = parse_json(TargetResources[0]).displayName\r\n| extend Target = parse_json(TargetResources[1]).userPrincipalName\r\n",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/aee5772a-8a79-41da-9e65-6e04d1067b66')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Enriched IP info SigninLogs",
+                "body": "SigninLogs\r\n| extend GeoIPInfo = geo_info_from_ip_address(IPAddress)\r\n| extend country = tostring(parse_json(GeoIPInfo).country), state = tostring(parse_json(GeoIPInfo).state), city = tostring(parse_json(GeoIPInfo).city), latitude = tostring(parse_json(GeoIPInfo).latitude), longitude = tostring(parse_json(GeoIPInfo).longitude)",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/b4dc3cf2-cf8c-42be-8f93-76e847a235c0')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Add application",
+                "description": "As part of the synchronization settings an application holding the configuration will be created. This contains the Application ID and the associated Service principal ID",
+                "body": "AuditLogs\r\n| where OperationName == \"Consent to application\"",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/cd6b7e42-5f89-419d-aa19-9c6f078cdf8e')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "GuestUser Operations",
+                "description": "List all audit activities performed by guest users.",
+                "body": "let ExternalUsers = SigninLogs\r\n| where TimeGenerated > ago(30d)\r\n| where UserType == 'Guest'\r\n| distinct UserId;\r\nAuditLogs\r\n| where InitiatedBy.user.id in (ExternalUsers)\r\n| project TimeGenerated, Id, OperationName ",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/d826c6de-f5b1-4810-988a-457d4e4e9ab4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Update application – Certificates and secrets management AuditLogs",
+                "description": "The Modified Properties field contacts the name of the Certificate or Secret that was added. ",
+                "body": "AuditLogs\r\n| where OperationName == \"Update application – Certificates and secrets management \"\r\n",
+                "related": {
+                    "categories": [
+                        "security"
+                    ],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/querypacks/queries",
+            "apiVersion": "2019-09-01",
+            "name": "[concat(parameters('querypacks_Invictus_Training_Query_Pack_name'), '/dbfd748e-94a2-4a09-ab8b-72ea633c72e2')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/querypacks', parameters('querypacks_Invictus_Training_Query_Pack_name'))]"
+            ],
+            "properties": {
+                "displayName": "Table Entries",
+                "description": "List all tables in the Log Analytics Workspace and the entry count of each table.",
+                "body": "union withsource=DataSource *\r\n| where TimeGenerated > ago(30d)\r\n| summarize TotalEntries = count() by DataSource\r\n| sort by TotalEntries",
+                "related": {
+                    "categories": [],
+                    "resourceTypes": [
+                        "microsoft.operationalinsights/workspaces"
+                    ]
+                },
+                "tags": {
+                    "labels": []
+                }
+            }
+        }
+    ]
+}
