@@ -1,0 +1,77 @@
+CREATE EXTERNAL TABLE cloudtrail_logs_all_accounts(
+  eventVersion STRING,
+  userIdentity STRUCT<
+    type: STRING,
+    principalId: STRING,
+    arn: STRING,
+    accountId: STRING,
+    invokedBy: STRING,
+    accessKeyId: STRING,
+    userName: STRING,
+    sessionContext: STRUCT<
+      attributes: STRUCT<
+        mfaAuthenticated: STRING,
+        creationDate: STRING>,
+      sessionIssuer: STRUCT<
+        type: STRING,
+        principalId: STRING,
+        arn: STRING,
+        accountId: STRING,
+        userName: STRING>,
+      ec2RoleDelivery:string,
+      webIdFederationData: STRUCT<
+        federatedProvider: STRING,
+        attributes: map<string,string>>
+    >
+  >,
+  eventTime STRING,
+  eventSource STRING,
+  eventName STRING,
+  awsRegion STRING,
+  sourceIpAddress STRING,
+  userAgent STRING,
+  errorCode STRING,
+  errorMessage STRING,
+  requestparameters STRING,
+  responseelements STRING,
+  additionaleventdata STRING,
+  requestId STRING,
+  eventId STRING,
+  readOnly STRING,
+  resources ARRAY<STRUCT<
+    arn: STRING,
+    accountId: STRING,
+    type: STRING>>,
+  eventType STRING,
+  apiVersion STRING,
+  recipientAccountId STRING,
+  serviceEventDetails STRING,
+  sharedEventID STRING,
+  vpcendpointid STRING,
+  tlsDetails struct<
+    tlsVersion:string,
+    cipherSuite:string,
+    clientProvidedHostHeader:string>
+)
+PARTITIONED BY ( 
+  `timestamp` string, 
+  `region` string, 
+  `accountid` string)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS INPUTFORMAT 'com.amazon.emr.cloudtrail.CloudTrailInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  's3://aws-cloudtrail-logs-654654524546-central/AWSLogs/o-ea1vav6few/'
+TBLPROPERTIES (
+  'storage.location.template'='s3://aws-cloudtrail-logs-654654524546-central/AWSLogs/o-ea1vav6few/${accountid}/CloudTrail/${region}/${timestamp}', 
+  'projection.enabled'='true', 
+  'projection.timestamp.type'='date', 
+  'projection.timestamp.format'='yyyy/MM/dd', 
+  'projection.timestamp.interval'='1', 
+  'projection.timestamp.interval.unit'='DAYS', 
+  'projection.timestamp.range'='2024/01/01,NOW', 
+  'projection.accountid.type'='enum', 
+  'projection.accountid.values'='654654524546,905418344483', 
+  'projection.region.type'='enum', 
+  'projection.region.values'='ap-northeast-1,ap-northeast-2,ap-northeast-3,ap-south-1,ap-southeast-1,ap-southeast-2,ca-central-1,eu-north-1,eu-west-1,eu-west-2,eu-west-3,sa-est-1,us-east-1,us-east-2,us-west-1,us-west-2,eu-west-2,eu-central-1,'
+)
