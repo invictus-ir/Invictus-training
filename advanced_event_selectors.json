@@ -1,0 +1,23 @@
+{
+    "TrailName": "cloudtrail-write-events",
+    "AdvancedEventSelectors": [
+        {
+            "Name": "Advanced-test",
+            "FieldSelectors": [
+                {
+                    "Field": "eventCategory",
+                    "Equals": [
+                        "Management"
+                    ]                                 
+                },
+                {
+                    "Field": "eventSource",
+                    "Equals": [
+                        "s3.amazonaws.com"
+                    ]                                 
+                }
+            ]
+        }
+
+    ]
+}
